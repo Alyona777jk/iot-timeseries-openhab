@@ -1,0 +1,4 @@
+openhab/userdata/*
+!openhab/userdata/.gitkeep
+influxdb/data/*
+!influxdb/data/.gitkeep

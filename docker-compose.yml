@@ -1,0 +1,59 @@
+services:
+  influxdb:
+    image: influxdb:2.7
+    container_name: influxdb
+    ports:
+      - "8086:8086"
+    volumes:
+      - ./influxdb/data:/var/lib/influxdb2
+      - ./influxdb/config:/etc/influxdb2
+    environment:
+      - DOCKER_INFLUXDB_INIT_MODE=setup
+      - DOCKER_INFLUXDB_INIT_USERNAME=admin
+      - DOCKER_INFLUXDB_INIT_PASSWORD=adminpassword123
+      - DOCKER_INFLUXDB_INIT_ORG=iot_org
+      - DOCKER_INFLUXDB_INIT_BUCKET=openhab_raw
+      - DOCKER_INFLUXDB_INIT_RETENTION=7d
+      - DOCKER_INFLUXDB_INIT_ADMIN_TOKEN=my-super-secret-auth-token
+    networks:
+      - iot-net
+
+  openhab:
+    image: openhab/openhab:4.1.2
+    container_name: openhab
+    restart: unless-stopped
+    ports:
+      - "8081:8080"
+      - "8443:8443"
+    volumes:
+      - ./openhab/conf:/openhab/conf
+      - ./openhab/userdata:/openhab/userdata
+      - ./openhab/addons:/openhab/addons
+    environment:
+      - CRYPTO_POLICY=unlimited
+      - OPENHAB_HTTP_PORT=8080
+      - OPENHAB_HTTPS_PORT=8443
+    depends_on:
+      - influxdb
+    networks:
+      - iot-net
+
+  grafana:
+    image: grafana/grafana:10.4.1
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./grafana/provisioning:/etc/grafana/provisioning
+      - ./grafana/dashboards:/var/lib/grafana/dashboards
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    depends_on:
+      - influxdb
+    networks:
+      - iot-net
+
+networks:
+  iot-net:
+    driver: bridge

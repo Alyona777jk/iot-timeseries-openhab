@@ -1,0 +1,9 @@
+Strategies {
+    everyMinute : "0 * * * * ?"
+    every5Minutes : "0 */5 * * * ?"
+    default = everyChange
+}
+
+Items {
+    gInfluxDB* : strategy = everyChange, everyMinute
+}

@@ -1,0 +1,8 @@
+Group gInfluxDB "InfluxDB Persisted Items"
+
+Number:Temperature LivingRoom_Temp "Living Room Temp [%.1f °C]" <temperature> (gInfluxDB) { influxdb="measurement_name" [room="living_room", type="climate"] }
+Number:Dimensionless LivingRoom_Humidity "Living Room Humidity [%.0f %%]" <humidity> (gInfluxDB) { influxdb="measurement_name" [room="living_room", type="climate"] }
+Number:Power Kitchen_Power "Kitchen Power [%.1f W]" <energy> (gInfluxDB) { influxdb="measurement_name" [room="kitchen", type="energy"] }
+Number:Energy Kitchen_Energy_Total "Kitchen Total Energy [%.2f kWh]" <energy> (gInfluxDB) { influxdb="measurement_name" [room="kitchen", type="energy"] }
+Number:Dimensionless Air_CO2 "CO2 Level [%d ppm]" <carbondioxide> (gInfluxDB) { influxdb="measurement_name" [room="office", type="air_quality"] }
+Number:Temperature DewPoint_Calc "Calculated Dew Point [%.1f °C]" <temperature> (gInfluxDB) { influxdb="measurement_name" [room="living_room", type="derived"] }

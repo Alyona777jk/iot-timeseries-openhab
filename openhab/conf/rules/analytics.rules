@@ -1,0 +1,22 @@
+val java.util.Random rand = new java.util.Random()
+
+rule "Simulate IoT Sensors and Calculate Derived Metrics"
+when
+    Time cron "0/15 * * * * ?"
+then
+    val double temp = 20.0 + (rand.nextDouble() * 5.0)
+    val double hum = 40.0 + (rand.nextDouble() * 25.0)
+    val double power = 150.0 + (rand.nextDouble() * 800.0)
+    val int co2 = 450 + rand.nextInt(600)
+
+    LivingRoom_Temp.postUpdate(temp)
+    LivingRoom_Humidity.postUpdate(hum)
+    Kitchen_Power.postUpdate(power)
+    Air_CO2.postUpdate(co2)
+
+    val double prevEnergy = if (Kitchen_Energy_Total.state instanceof Number) (Kitchen_Energy_Total.state as Number).doubleValue else 0.0
+    Kitchen_Energy_Total.postUpdate(prevEnergy + (power / 1000.0) * (15.0 / 3600.0))
+
+    val double dewPoint = temp - ((100.0 - hum) / 5.0)
+    DewPoint_Calc.postUpdate(dewPoint)
+end
